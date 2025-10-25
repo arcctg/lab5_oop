@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.RadioMenuItem?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToggleGroup?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/11.0.1"
+  fx:controller="org.arcctg.lab5_oop.MainController">
+  <center>
+    <Canvas height="700.0" width="900.0" fx:id="canvas"/>
+  </center>
+  <top>
+    <VBox>
+      <MenuBar>
+        <Menu text="Файл">
+          <MenuItem onAction="#handleClear" text="Очистити"/>
+          <MenuItem onAction="#handleExit" text="Вихід"/>
+          <SeparatorMenuItem/>
+        </Menu>
+        <Menu text="Об'єкти">
+          <fx:define>
+            <ToggleGroup fx:id="ObjectsGroup"/>
+          </fx:define>
+          <RadioMenuItem fx:id="pointMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#choosePoint" text="Крапка"/>
+          <RadioMenuItem fx:id="lineMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#chooseLine" text="Лінія"/>
+          <RadioMenuItem fx:id="rectMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#chooseRect" text="Прямокутник"/>
+          <RadioMenuItem fx:id="ellipseMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#chooseEllipse" text="Еліпс"/>
+          <RadioMenuItem fx:id="cubeMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#chooseCube" text="Куб"/>
+          <RadioMenuItem fx:id="lineOOMenuItem" toggleGroup="$ObjectsGroup"
+            onAction="#chooseLineOO" text="Лінія з кружками"/>
+        </Menu>
+        <Menu text="Довідка">
+          <MenuItem onAction="#handleAbout" text="Про програму"/>
+        </Menu>
+      </MenuBar>
+      <ToolBar>
+        <Button onAction="#choosePoint" fx:id="pointButton">
+          <tooltip>
+            <Tooltip text="Крапка"/>
+          </tooltip>
+        </Button>
+        <Button onAction="#chooseLine" fx:id="lineButton">
+          <tooltip>
+            <Tooltip text="Лінія"/>
+          </tooltip>
+        </Button>
+        <Button onAction="#chooseRect" fx:id="rectButton">
+          <tooltip>
+            <Tooltip text="Прямокутник"/>
+          </tooltip>
+        </Button>
+        <Button onAction="#chooseEllipse" fx:id="ellipseButton">
+          <tooltip>
+            <Tooltip text="Еліпс"/>
+          </tooltip>
+        </Button>
+        <Button onAction="#chooseCube" fx:id="cubeButton">
+          <tooltip>
+            <Tooltip text="Куб"/>
+          </tooltip>
+        </Button>
+        <Button onAction="#chooseLineOO" fx:id="lineOOButton">
+          <tooltip>
+            <Tooltip text="Лінія з кружечками"/>
+          </tooltip>
+        </Button>
+      </ToolBar>
+    </VBox>
+  </top>
+</BorderPane>
