@@ -1,33 +1,55 @@
 package org.arcctg.lab5_oop;
 
 import java.util.List;
-import java.util.function.Function;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.arcctg.lab5_oop.shapes.Shape;
 
 public class MyTable {
 
+    @FXML private TableView<ShapeData> tableView;
+    @FXML private TableColumn<ShapeData, String> nameColumn;
+    @FXML private TableColumn<ShapeData, Double> x1Column;
+    @FXML private TableColumn<ShapeData, Double> y1Column;
+    @FXML private TableColumn<ShapeData, Double> x2Column;
+    @FXML private TableColumn<ShapeData, Double> y2Column;
+
     private Stage tableStage;
-    private TableView<ShapeData> tableView;
     private final ObservableList<ShapeData> data;
     @Setter
     private TableObserver observer;
 
     public MyTable() {
         data = FXCollections.observableArrayList();
-        createTable();
+    }
+
+    @FXML
+    private void initialize() {
+        tableView.setItems(data);
+
+        nameColumn.setCellValueFactory(cellData ->
+            new SimpleStringProperty(cellData.getValue().name()));
+        x1Column.setCellValueFactory(cellData ->
+            new SimpleDoubleProperty(cellData.getValue().x1()).asObject());
+        y1Column.setCellValueFactory(cellData ->
+            new SimpleDoubleProperty(cellData.getValue().y1()).asObject());
+        x2Column.setCellValueFactory(cellData ->
+            new SimpleDoubleProperty(cellData.getValue().x2()).asObject());
+        y2Column.setCellValueFactory(cellData ->
+            new SimpleDoubleProperty(cellData.getValue().y2()).asObject());
+
         setUpListeners();
     }
 
@@ -66,28 +88,6 @@ public class MyTable {
         }
     }
 
-    private void createTable() {
-        tableView = new TableView<>();
-        tableView.setItems(data);
-
-        TableColumn<ShapeData, String> nameColumn = new TableColumn<>("Назва");
-        nameColumn.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().name()));
-
-        TableColumn<ShapeData, Double> x1Column = createDoubleColumn("x1", ShapeData::x1);
-        TableColumn<ShapeData, Double> y1Column = createDoubleColumn("y1", ShapeData::y1);
-        TableColumn<ShapeData, Double> x2Column = createDoubleColumn("x2", ShapeData::x2);
-        TableColumn<ShapeData, Double> y2Column = createDoubleColumn("y2", ShapeData::y2);
-
-        tableView.getColumns().addAll(nameColumn, x1Column, y1Column, x2Column, y2Column);
-    }
-
-    private TableColumn<ShapeData, Double> createDoubleColumn(String title, Function<ShapeData, Double> valueExtractor) {
-        TableColumn<ShapeData, Double> column = new TableColumn<>(title);
-        column.setCellValueFactory(cellData -> new SimpleDoubleProperty(valueExtractor.apply(cellData.getValue())).asObject());
-
-        return column;
-    }
-
     private void setUpListeners() {
         tableView.getSelectionModel().selectedItemProperty()
             .addListener((obs, oldSelection, newSelection) -> {
@@ -116,24 +116,15 @@ public class MyTable {
         }
     }
 
-
+    @SneakyThrows
     private void createStage() {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("table-view.fxml"));
+        loader.setController(this);
+
         tableStage = new Stage();
         tableStage.setTitle("Таблиця об'єктів");
-        tableStage.setWidth(600);
-        tableStage.setHeight(400);
-
-        Label instructionsLabel = new Label(
-            "Керування: DELETE - видалити об'єкт, ESCAPE - скасувати виділення"
-        );
-        instructionsLabel.setStyle("-fx-padding: 5; -fx-font-size: 12;");
-
-        VBox vbox = new VBox();
-        vbox.getChildren().addAll(instructionsLabel, tableView);
-
-        tableStage.setScene(new Scene(vbox));
+        tableStage.setScene(new Scene(loader.load(), 600, 400));
     }
-
 
     public record ShapeData(String name, double x1, double y1, double x2, double y2) {}
 }

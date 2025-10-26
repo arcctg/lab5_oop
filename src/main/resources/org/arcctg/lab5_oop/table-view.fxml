@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml">
+
+  <Label text="Керування: DELETE - видалити об'єкт, ESCAPE - скасувати виділення"
+    style="-fx-padding: 5; -fx-font-size: 12;"/>
+
+  <TableView fx:id="tableView" VBox.vgrow="ALWAYS">
+    <columns>
+      <TableColumn fx:id="nameColumn" text="Назва" prefWidth="120"/>
+      <TableColumn fx:id="x1Column" text="x1" prefWidth="95"/>
+      <TableColumn fx:id="y1Column" text="y1" prefWidth="95"/>
+      <TableColumn fx:id="x2Column" text="x2" prefWidth="95"/>
+      <TableColumn fx:id="y2Column" text="y2" prefWidth="95"/>
+    </columns>
+  </TableView>
+</VBox>
