@@ -1,14 +1,21 @@
 package org.arcctg.lab5_oop;
 
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioMenuItem;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import lombok.Setter;
+
+import java.io.File;
+
 import org.arcctg.lab5_oop.icons.*;
 import org.arcctg.lab5_oop.shapes.*;
 
-public class MainController {
+public class MainController implements TableObserver {
 
     @FXML private Canvas canvas;
     @FXML private Button pointButton;
@@ -24,11 +31,18 @@ public class MainController {
     @FXML private RadioMenuItem cubeMenuItem;
     @FXML private RadioMenuItem lineOOMenuItem;
 
+    @Setter
+    private Stage stage;
     private Button[] buttons;
     private MyEditor myEditor;
+    private MyTable myTable;
 
     public void initialize() {
-        myEditor = new MyEditor(canvas.getGraphicsContext2D());
+        myEditor = MyEditor.getInstance();
+        myEditor.setGc(canvas.getGraphicsContext2D());
+        myTable = new MyTable();
+        myTable.setObserver(this);
+
         setupCanvasEvents();
         initializeButtons();
         clearButtonSelection();
@@ -80,11 +94,37 @@ public class MainController {
     @FXML
     private void handleClear() {
         myEditor.clear();
+        myTable.clear();
+    }
+
+    @FXML
+    private void handleShowTable() {
+        myTable.show();
+    }
+
+    @FXML
+    private void handleHideTable() {
+        myTable.hide();
+    }
+
+    @FXML
+    private void handleSaveFile() {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showSaveDialog(stage);
+        myEditor.saveAllShapesToFile(selectedFile);
+    }
+
+    @FXML
+    private void handleLoadFile() {
+        FileChooser fileChooser = new FileChooser();
+        File selectedFile = fileChooser.showOpenDialog(stage);
+        myEditor.loadFromFile(selectedFile);
+        myTable.loadFromShapes(myEditor.getShapes());
     }
 
     @FXML
     private void handleExit() {
-        System.exit(0);
+        Platform.exit();
     }
 
     @FXML
@@ -94,15 +134,21 @@ public class MainController {
         alert.setHeaderText("Графічний редактор");
         alert.setContentText(
             """
-                Лабораторна робота №4
-                Розробка графічного редактора об'єктів
+                Лабораторна робота №5
+                Розробка багатовіконного інтерфейсу користувача
+                для графічного редактора об'єктів
                 
                 Варіант: 10
-                Клас MyEditor: динамічний об'єкт
+                Клас MyEditor: Singleton (класична реалізація)
                 Гумовий слід: пунктирна червона лінія
                 Куб та лінія з кружечками
                 
-                Із 3 лаби:
+                Нові можливості:
+                - Немодальне вікно таблиці об'єктів
+                - Автоматичний запис об'єктів у файл
+                - Singleton патерн для MyEditor
+                
+                Із 4 лаби:
                 Прямокутник: по кутам, чорний контур без заповнення
                 Еліпс: від центру, чорний контур з сірим заповненням
                 Позначка режиму: в меню
@@ -112,7 +158,12 @@ public class MainController {
 
     private void setupCanvasEvents() {
         canvas.setOnMousePressed(myEditor::onLBDown);
-        canvas.setOnMouseReleased(myEditor::onLBUp);
+        canvas.setOnMouseReleased(event -> {
+            myEditor.onLBUp(event);
+            if (myEditor.getCurrentShape() != null) {
+                myTable.add(myEditor.getCurrentShape());
+            }
+        });
         canvas.setOnMouseDragged(myEditor::onMouseMove);
     }
 
@@ -160,5 +211,15 @@ public class MainController {
 
     private Canvas createIcon(Icon icon) {
         return icon.createCanvas();
+    }
+
+    @Override
+    public void onShapeSelected(int index) {
+        myEditor.selectShape(index);
+    }
+
+    @Override
+    public void onShapeDeleted(int index) {
+        myEditor.deleteShape(index);
     }
 }

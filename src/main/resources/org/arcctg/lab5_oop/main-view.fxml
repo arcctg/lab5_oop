@@ -22,8 +22,13 @@
       <MenuBar>
         <Menu text="Файл">
           <MenuItem onAction="#handleClear" text="Очистити"/>
+          <MenuItem onAction="#handleSaveFile" text="Зберегти у файл"/>
+          <MenuItem onAction="#handleLoadFile" text="Завантажити з файлу"/>
           <MenuItem onAction="#handleExit" text="Вихід"/>
-          <SeparatorMenuItem/>
+        </Menu>
+        <Menu text="Таблиця">
+          <MenuItem onAction="#handleShowTable" text="Показати таблицю"/>
+          <MenuItem onAction="#handleHideTable" text="Приховати таблицю"/>
         </Menu>
         <Menu text="Об'єкти">
           <fx:define>

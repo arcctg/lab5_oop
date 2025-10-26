@@ -66,7 +66,7 @@
             <!-- Default configuration for running with: mvn clean javafx:run -->
             <id>default-cli</id>
             <configuration>
-              <mainClass>org.arcctg.lab5_oop/org.arcctg.lab5_oop.HelloApplication</mainClass>
+              <mainClass>org.arcctg.lab5_oop.MainApplication</mainClass>
               <launcher>app</launcher>
               <jlinkZipName>app</jlinkZipName>
               <jlinkImageName>app</jlinkImageName>
