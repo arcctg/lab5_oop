@@ -7,6 +7,6 @@ public class RectShape extends Shape implements RectDrawable {
 
     @Override
     public void show(GraphicsContext gc) {
-        drawRect(gc, xs1, ys1, xs2, ys2);
+        drawRect(gc, x1, y1, x2, y2);
     }
 }

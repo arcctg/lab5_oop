@@ -7,6 +7,6 @@ public class LineShape extends Shape implements LineDrawable {
 
     @Override
     public void show(GraphicsContext gc) {
-        drawLine(gc, xs1, ys1, xs2, ys2);
+        drawLine(gc, x1, y1, x2, y2);
     }
 }

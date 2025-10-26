@@ -7,7 +7,7 @@ public class EllipseShape extends Shape implements EllipseDrawable {
 
     @Override
     public void show(GraphicsContext gc) {
-        if (isFinished) fillEllipse(gc, xs1, ys1, xs2, ys2);
-        drawEllipse(gc, xs1, ys1, xs2, ys2);
+        if (isFinished) fillEllipse(gc, x1, y1, x2, y2);
+        drawEllipse(gc, x1, y1, x2, y2);
     }
 }

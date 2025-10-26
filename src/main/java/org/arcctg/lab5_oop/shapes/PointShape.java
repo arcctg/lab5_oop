@@ -7,6 +7,6 @@ public class PointShape extends Shape implements PointDrawable {
 
     @Override
     public void show(GraphicsContext gc) {
-        drawPoint(gc, xs1, ys1);
+        drawPoint(gc, x1, y1);
     }
 }

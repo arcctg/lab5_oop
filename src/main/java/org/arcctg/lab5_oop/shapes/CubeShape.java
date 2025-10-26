@@ -8,17 +8,17 @@ public class CubeShape extends Shape implements LineDrawable, RectDrawable {
 
     @Override
     public void show(GraphicsContext gc) {
-        double dx = Math.abs(xs2 - xs1);
-        double dy = Math.abs(ys2 - ys1);
+        double dx = Math.abs(x2 - x1);
+        double dy = Math.abs(y2 - y1);
         double offX = Math.max(10, Math.min(30, dx * 0.2));
         double offY = -Math.max(10, Math.min(30, dy * 0.2));
 
-        drawRect(gc, xs1, ys1, xs2, ys2);
-        drawRect(gc, xs1 + offX, ys1 + offY, xs2 + offX, ys2 + offY);
+        drawRect(gc, x1, y1, x2, y2);
+        drawRect(gc, x1 + offX, y1 + offY, x2 + offX, y2 + offY);
 
-        drawLine(gc, xs1, ys1, xs1 + offX, ys1 + offY);
-        drawLine(gc, xs2, ys1, xs2 + offX, ys1 + offY);
-        drawLine(gc, xs1, ys2, xs1 + offX, ys2 + offY);
-        drawLine(gc, xs2, ys2, xs2 + offX, ys2 + offY);
+        drawLine(gc, x1, y1, x1 + offX, y1 + offY);
+        drawLine(gc, x2, y1, x2 + offX, y1 + offY);
+        drawLine(gc, x1, y2, x1 + offX, y2 + offY);
+        drawLine(gc, x2, y2, x2 + offX, y2 + offY);
     }
 }

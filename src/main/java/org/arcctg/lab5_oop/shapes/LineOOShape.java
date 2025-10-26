@@ -9,19 +9,19 @@ public class LineOOShape extends Shape implements LineDrawable, EllipseDrawable 
     @Override
     public void show(GraphicsContext gc) {
         double r = 8.0;
-        double dx = xs2 - xs1;
-        double dy = ys2 - ys1;
+        double dx = x2 - x1;
+        double dy = y2 - y1;
         double dist = Math.sqrt(dx * dx + dy * dy);
 
         if (dist > 2 * r) {
-            double new_xs1 = xs1 + (dx * r / dist);
-            double new_ys1 = ys1 + (dy * r / dist);
-            double new_xs2 = xs2 - (dx * r / dist);
-            double new_ys2 = ys2 - (dy * r / dist);
-            drawLine(gc, new_xs1, new_ys1, new_xs2, new_ys2);
+            double newX1 = x1 + (dx * r / dist);
+            double newY1 = y1 + (dy * r / dist);
+            double newX2 = x2 - (dx * r / dist);
+            double newY2 = y2 - (dy * r / dist);
+            drawLine(gc, newX1, newY1, newX2, newY2);
         }
 
-        drawEllipse(gc, xs1, ys1, xs1 + r, ys1 + r);
-        drawEllipse(gc, xs2, ys2, xs2 + r, ys2 + r);
+        drawEllipse(gc, x1, y1, x1 + r, y1 + r);
+        drawEllipse(gc, x2, y2, x2 + r, y2 + r);
     }
 }
