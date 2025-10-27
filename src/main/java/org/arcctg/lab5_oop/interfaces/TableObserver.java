@@ -1,4 +1,4 @@
-package org.arcctg.lab5_oop;
+package org.arcctg.lab5_oop.interfaces;
 
 public interface TableObserver {
     void onShapeSelected(int index);

@@ -13,6 +13,7 @@ import lombok.Setter;
 import java.io.File;
 
 import org.arcctg.lab5_oop.icons.*;
+import org.arcctg.lab5_oop.interfaces.TableObserver;
 import org.arcctg.lab5_oop.shapes.*;
 
 public class MainController implements TableObserver {
@@ -38,13 +39,10 @@ public class MainController implements TableObserver {
     private MyTable myTable;
 
     public void initialize() {
-        myEditor = MyEditor.getInstance();
-        myEditor.setGc(canvas.getGraphicsContext2D());
-        myTable = new MyTable();
-        myTable.setObserver(this);
-
+        initEditor();
+        initTable();
         setupCanvasEvents();
-        initializeButtons();
+        initButtons();
         clearButtonSelection();
         setupButtonIcons();
     }
@@ -123,8 +121,9 @@ public class MainController implements TableObserver {
     }
 
     @FXML
-    private void handleExit() {
+    public void handleExit() {
         Platform.exit();
+        myEditor.clear();
     }
 
     @FXML
@@ -144,9 +143,13 @@ public class MainController implements TableObserver {
                 Куб та лінія з кружечками
                 
                 Нові можливості:
-                - Немодальне вікно таблиці об'єктів
-                - Автоматичний запис об'єктів у файл
                 - Singleton патерн для MyEditor
+                - Немодальне вікно таблиці об'єктів
+                - Автоматичний запис об'єктів у файл в директорії
+                - Збереження об'єктів в обраний файл
+                - Завантаження об'єктів з обраного файлу
+                - Видалення об'єктів з таблиці
+                - Зняття ви
                 
                 Із 4 лаби:
                 Прямокутник: по кутам, чорний контур без заповнення
@@ -167,7 +170,7 @@ public class MainController implements TableObserver {
         canvas.setOnMouseDragged(myEditor::onMouseMove);
     }
 
-    private void initializeButtons() {
+    private void initButtons() {
         buttons = new Button[]{pointButton, lineButton, rectButton, ellipseButton, cubeButton,
             lineOOButton};
     }
@@ -211,6 +214,16 @@ public class MainController implements TableObserver {
 
     private Canvas createIcon(Icon icon) {
         return icon.createCanvas();
+    }
+
+    private void initTable() {
+        myTable = new MyTable();
+        myTable.setObserver(this);
+    }
+
+    private void initEditor() {
+        myEditor = MyEditor.getInstance();
+        myEditor.setGc(canvas.getGraphicsContext2D());
     }
 
     @Override

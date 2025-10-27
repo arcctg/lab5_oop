@@ -15,7 +15,7 @@ public class MainApplication extends Application {
         Scene scene = new Scene(fxmlLoader.load(), 900, 700);
 
         MainController controller = fxmlLoader.getController();
-        stage.setOnCloseRequest(e -> Platform.exit());
+        stage.setOnCloseRequest(e -> controller.handleExit());
         controller.setStage(stage);
 
         stage.setTitle("Графічний редактор");

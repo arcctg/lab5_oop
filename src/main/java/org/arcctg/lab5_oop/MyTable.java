@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.SneakyThrows;
+import org.arcctg.lab5_oop.interfaces.TableObserver;
 import org.arcctg.lab5_oop.shapes.Shape;
 
 public class MyTable {
@@ -35,7 +36,6 @@ public class MyTable {
         data = FXCollections.observableArrayList();
     }
 
-    @FXML
     private void initialize() {
         tableView.setItems(data);
 

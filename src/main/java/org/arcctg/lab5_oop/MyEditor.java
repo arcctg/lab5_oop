@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,6 +12,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 import org.arcctg.lab5_oop.shapes.Shape;
 
 public class MyEditor {
@@ -129,6 +129,7 @@ public class MyEditor {
     }
 
     public void saveAllShapesToFile(File filename) {
+        selectShape(-1);
         try (FileWriter writer = new FileWriter(filename)) {
             for (Shape shape : shapes) {
                 if (shape != null) {
@@ -145,18 +146,8 @@ public class MyEditor {
             shapes.clear();
             String line;
             while ((line = reader.readLine()) != null) {
-                String[] parts = line.split("\t");
-                if (parts.length == 5) {
-                    Shape shape = (Shape) Class.forName(parts[0])
-                        .getDeclaredConstructor()
-                        .newInstance();
-                    shape.set(
-                        Double.parseDouble(parts[1]),
-                        Double.parseDouble(parts[2]),
-                        Double.parseDouble(parts[3]),
-                        Double.parseDouble(parts[4])
-                    );
-                    shape.setFinished(true);
+                Shape shape = parseShapeFromLine(line);
+                if (shape != null) {
                     shapes.add(shape);
                     appendShapeToObjectsFile(shape);
                 }
@@ -165,6 +156,32 @@ public class MyEditor {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @SneakyThrows
+    private Shape parseShapeFromLine(String line) {
+        String[] parts = line.split("\t");
+        if (parts.length != 5) {
+            return null;
+        }
+
+        Shape shape = createShapeInstance(parts[0]);
+        shape.set(
+            Double.parseDouble(parts[1]),
+            Double.parseDouble(parts[2]),
+            Double.parseDouble(parts[3]),
+            Double.parseDouble(parts[4])
+        );
+        shape.setFinished(true);
+
+        return shape;
+    }
+
+    @SneakyThrows
+    private Shape createShapeInstance(String className) {
+        return (Shape) Class.forName(className)
+            .getDeclaredConstructor()
+            .newInstance();
     }
 
     public void selectShape(int index) {
