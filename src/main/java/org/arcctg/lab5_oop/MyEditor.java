@@ -107,9 +107,10 @@ public class MyEditor {
     }
 
     public void clear() {
+        clearShapeSelection();
         shapes.clear();
-        clearCanvas();
         clearObjectsFile();
+        onPaint();
     }
 
     private void clearObjectsFile() {
@@ -129,7 +130,8 @@ public class MyEditor {
     }
 
     public void saveAllShapesToFile(File filename) {
-        selectShape(-1);
+        clearShapeSelection();
+
         try (FileWriter writer = new FileWriter(filename)) {
             for (Shape shape : shapes) {
                 if (shape != null) {
@@ -184,18 +186,25 @@ public class MyEditor {
             .newInstance();
     }
 
+    public void clearShapeSelection() {
+        updateShapeSelection(-1);
+    }
+
     public void selectShape(int index) {
         if (index < shapes.size()) {
-            selectedShapeIndex = index;
-            onPaint();
+            updateShapeSelection(index);
         }
     }
 
     public void deleteShape(int index) {
         if (index >= 0 && index < shapes.size()) {
             shapes.remove(index);
-            selectedShapeIndex = -1;
-            onPaint();
+            updateShapeSelection(-1);
         }
+    }
+
+    private void updateShapeSelection(int index) {
+        selectedShapeIndex = index;
+        onPaint();
     }
 }

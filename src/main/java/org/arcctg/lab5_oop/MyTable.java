@@ -1,6 +1,7 @@
 package org.arcctg.lab5_oop;
 
 import java.util.List;
+import java.util.function.Consumer;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -15,8 +16,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import lombok.Setter;
 import lombok.SneakyThrows;
-import org.arcctg.lab5_oop.interfaces.TableObserver;
-import org.arcctg.lab5_oop.shapes.Shape;
 
 public class MyTable {
 
@@ -29,13 +28,17 @@ public class MyTable {
 
     private Stage tableStage;
     private final ObservableList<ShapeData> data;
+
     @Setter
-    private TableObserver observer;
+    private Consumer<Integer> onSelectionChanged;
+    @Setter
+    private Consumer<Integer> onItemDeleted;
 
     public MyTable() {
         data = FXCollections.observableArrayList();
     }
 
+    @FXML
     private void initialize() {
         tableView.setItems(data);
 
@@ -66,14 +69,12 @@ public class MyTable {
         }
     }
 
-    public void add(Shape shape) {
-        ShapeData shapeData = new ShapeData(
-            shape.getClass().getSimpleName(),
-            shape.getX1(),
-            shape.getY1(),
-            shape.getX2(),
-            shape.getY2()
-        );
+    public void add(String name, double x1, double y1, double x2, double y2) {
+        ShapeData shapeData = new ShapeData(name, x1, y1, x2, y2);
+        data.add(shapeData);
+    }
+
+    public void addData(ShapeData shapeData) {
         data.add(shapeData);
     }
 
@@ -81,19 +82,17 @@ public class MyTable {
         data.clear();
     }
 
-    public void loadFromShapes(List<Shape> shapes) {
+    public void loadData(List<ShapeData> items) {
         data.clear();
-        for (Shape shape : shapes) {
-            add(shape);
-        }
+        data.addAll(items);
     }
 
     private void setUpListeners() {
         tableView.getSelectionModel().selectedItemProperty()
             .addListener((obs, oldSelection, newSelection) -> {
-                if (newSelection != null && observer != null) {
+                if (newSelection != null && onSelectionChanged != null) {
                     int index = tableView.getSelectionModel().getSelectedIndex();
-                    observer.onShapeSelected(index);
+                    onSelectionChanged.accept(index);
                 }
             });
 
@@ -101,16 +100,16 @@ public class MyTable {
     }
 
     private void handleKeyPress(KeyEvent event) {
-        if (event.getCode() == KeyCode.DELETE && observer != null) {
+        if (event.getCode() == KeyCode.DELETE && onItemDeleted != null) {
             int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                observer.onShapeDeleted(selectedIndex);
+                onItemDeleted.accept(selectedIndex);
                 data.remove(selectedIndex);
             }
-        } else if (event.getCode() == KeyCode.ESCAPE && observer != null) {
+        } else if (event.getCode() == KeyCode.ESCAPE && onSelectionChanged != null) {
             int selectedIndex = tableView.getSelectionModel().getSelectedIndex();
             if (selectedIndex >= 0) {
-                observer.onShapeSelected(-1);
+                onSelectionChanged.accept(-1);
                 tableView.getSelectionModel().clearSelection();
             }
         }

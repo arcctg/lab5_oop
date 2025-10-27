@@ -13,10 +13,9 @@ import lombok.Setter;
 import java.io.File;
 
 import org.arcctg.lab5_oop.icons.*;
-import org.arcctg.lab5_oop.interfaces.TableObserver;
 import org.arcctg.lab5_oop.shapes.*;
 
-public class MainController implements TableObserver {
+public class MainController {
 
     @FXML private Canvas canvas;
     @FXML private Button pointButton;
@@ -117,13 +116,28 @@ public class MainController implements TableObserver {
         FileChooser fileChooser = new FileChooser();
         File selectedFile = fileChooser.showOpenDialog(stage);
         myEditor.loadFromFile(selectedFile);
-        myTable.loadFromShapes(myEditor.getShapes());
+
+        updateTableFromEditor();
+    }
+
+    private void updateTableFromEditor() {
+        var shapeDataList = myEditor.getShapes().stream()
+            .map(shape ->
+                new MyTable.ShapeData(
+                    shape.getClass().getSimpleName(),
+                    shape.getX1(), shape.getY1(),
+                    shape.getX2(), shape.getY2()
+                )
+            )
+            .toList();
+
+        myTable.loadData(shapeDataList);
     }
 
     @FXML
     public void handleExit() {
         Platform.exit();
-        myEditor.clear();
+        handleClear();
     }
 
     @FXML
@@ -162,9 +176,15 @@ public class MainController implements TableObserver {
     private void setupCanvasEvents() {
         canvas.setOnMousePressed(myEditor::onLBDown);
         canvas.setOnMouseReleased(event -> {
+            Shape currentShape = myEditor.getCurrentShape();
             myEditor.onLBUp(event);
-            if (myEditor.getCurrentShape() != null) {
-                myTable.add(myEditor.getCurrentShape());
+
+            if (currentShape != null) {
+                myTable.add(
+                    currentShape.getClass().getSimpleName(),
+                    currentShape.getX1(), currentShape.getY1(),
+                    currentShape.getX2(), currentShape.getY2()
+                );
             }
         });
         canvas.setOnMouseDragged(myEditor::onMouseMove);
@@ -218,21 +238,12 @@ public class MainController implements TableObserver {
 
     private void initTable() {
         myTable = new MyTable();
-        myTable.setObserver(this);
+        myTable.setOnSelectionChanged(myEditor::selectShape);
+        myTable.setOnItemDeleted(myEditor::deleteShape);
     }
 
     private void initEditor() {
         myEditor = MyEditor.getInstance();
         myEditor.setGc(canvas.getGraphicsContext2D());
-    }
-
-    @Override
-    public void onShapeSelected(int index) {
-        myEditor.selectShape(index);
-    }
-
-    @Override
-    public void onShapeDeleted(int index) {
-        myEditor.deleteShape(index);
     }
 }
